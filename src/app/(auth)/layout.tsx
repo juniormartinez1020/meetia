@@ -1,0 +1,31 @@
+import React from "react"
+
+interface Props {
+    children: React.ReactNode
+}
+
+const Layout = ({ children }: Props) => {
+  return (
+    <div
+    className="bg-muted flex min-h-svh flex-col items-center
+    p-6 md:p-10"
+    >
+      <div
+      className="w-full max-w-sm md:max-w-3xl"
+      >
+         <div
+    className="bg-muted flex min-h-svh flex-col items-center
+    p-6 md:p-10"
+    >
+      <div
+      className="w-full max-w-sm md:max-w-3xl"
+      >
+        {children}
+    </div>
+  </div>
+  </div>
+  </div>
+  )
+}
+
+export default Layout
