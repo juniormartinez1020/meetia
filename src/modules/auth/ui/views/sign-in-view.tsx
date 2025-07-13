@@ -12,10 +12,9 @@ import { Alert, AlertTitle } from "@/components/ui/alert";
 import { OctagonAlertIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
-import { fa } from "zod/v4/locales";
+
 
 
 const formSchema = z.object({
@@ -25,7 +24,6 @@ const formSchema = z.object({
 
 export const SignInView = () => {
 
-    const router = useRouter()
     const [error, setError] = useState<string | null>(null)
     const [pending, setPending] = useState(false)
 
@@ -44,12 +42,35 @@ export const SignInView = () => {
          authClient.signIn.email(
             {
                 email: data.email,
-                password: data.password
+                password: data.password,
+                callbackURL: '/'
             },
             {
                 onSuccess: () => {
                     setPending(false)
-                    router.push('/')
+                },
+                onError: ({ error }) => {
+                    setError(error.message)
+                }
+            },
+    
+        )
+
+    }
+
+
+    const onSocial = async (provider: 'github' | 'google') => {
+        setError(null)
+        setPending(true)
+
+         authClient.signIn.social(
+            {
+               provider: provider,
+               callbackURL: '/'
+            },
+            {
+                onSuccess: () => {
+                    setPending(false)
                 },
                 onError: ({ error }) => {
                     setError(error.message)
@@ -175,6 +196,7 @@ export const SignInView = () => {
                         <div className="grid grid-cols-2 gap-4">
                             <Button
                             disabled={pending}
+                            onClick={() => onSocial('google')}
                             variant='outline'
                             type="button"
                             className="w-full"
@@ -183,6 +205,7 @@ export const SignInView = () => {
                             </Button>
                             <Button
                             disabled={pending}
+                            onClick={() => onSocial('github')}
                             variant='outline'
                             type="button"
                             className="w-full"
